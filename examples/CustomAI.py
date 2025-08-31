@@ -115,6 +115,124 @@ class CustomAI(AIInterface):
         #         self.cc.command_call("STAND_FB")
         #     else:
         #         self.cc.command_call("STAND_D_DF_FA")
+        
+        print(f"{self.frame_data.character_data=}")
+        print(f"{self.frame_data.projectile_data=}")
+
+        # self.frame_data.character_data = [
+        #     CharacterData(
+        #         player_number=True, hp=340, energy=38, x=474, y=537,
+        #         left=454, right=494, top=435, bottom=640, speed_x=0, speed_y=0,
+        #         state=<State.STAND: 'stand'>, action=<Action.STAND_D_DF_FA: 'stand_d_df_fa'>,
+        #         front=True, control=False,
+        #         attack_data=AttackData(
+        #             setting_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #             setting_speed_x=0, setting_speed_y=0,
+        #             current_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #             current_frame=-1, player_number=True, speed_x=0, speed_y=0,
+        #             start_up=0, active=0, hit_damage=0, guard_damage=0,
+        #             start_add_energy=0, hit_add_energy=0, guard_add_energy=0,
+        #             give_energy=0, impact_x=0, impact_y=0, give_guard_recov=0,
+        #             attack_type=0, down_prop=False, is_projectile=False,
+        #             is_live=False, empty_flag=True, identifier=''
+        #         ),
+        #         remaining_frame=9, hit_confirm=False,
+        #         graphic_size_x=400, graphic_size_y=320, graphic_adjust_x=140,
+        #         hit_count=0, last_hit_frame=623,
+        #         projectile_attack=[
+        #             AttackData(setting_hit_area=HitArea(left=205, right=250, top=175, bottom=195),
+        #                     setting_speed_x=3, setting_speed_y=0,
+        #                     current_hit_area=HitArea(left=635, right=680, top=510, bottom=530),
+        #                     current_frame=32, player_number=True, speed_x=3, speed_y=0,
+        #                     start_up=20, active=150, hit_damage=5, guard_damage=2,
+        #                     start_add_energy=-5, hit_add_energy=3, guard_add_energy=5,
+        #                     give_energy=5, impact_x=10, impact_y=0, give_guard_recov=5,
+        #                     attack_type=1, down_prop=False, is_projectile=True, is_live=True,
+        #                     empty_flag=False, identifier='ff6438e3-ff1a-4239-909b-beb2f467dc64'
+        #             ),
+        #             AttackData(setting_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                     setting_speed_x=0, setting_speed_y=0,
+        #                     current_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                     current_frame=-1, player_number=True, speed_x=0, speed_y=0,
+        #                     start_up=0, active=0, hit_damage=0, guard_damage=0,
+        #                     start_add_energy=0, hit_add_energy=0, guard_add_energy=0,
+        #                     give_energy=0, impact_x=0, impact_y=0, give_guard_recov=0,
+        #                     attack_type=0, down_prop=False, is_projectile=False, is_live=False,
+        #                     empty_flag=True, identifier=''),
+        #             AttackData(setting_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                     setting_speed_x=0, setting_speed_y=0,
+        #                     current_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                     current_frame=-1, player_number=True, speed_x=0, speed_y=0,
+        #                     start_up=0, active=0, hit_damage=0, guard_damage=0,
+        #                     start_add_energy=0, hit_add_energy=0, guard_add_energy=0,
+        #                     give_energy=0, impact_x=0, impact_y=0, give_guard_recov=0,
+        #                     attack_type=0, down_prop=False, is_projectile=False, is_live=False,
+        #                     empty_flag=True, identifier='')
+        #         ]
+        #     ),
+        #     CharacterData(
+        #         player_number=False, hp=345, energy=85, x=778, y=557,
+        #         left=758, right=798, top=475, bottom=640, speed_x=0, speed_y=0,
+        #         state=<State.CROUCH: 'crouch'>, action=<Action.CROUCH_B: 'crouch_b'>,
+        #         front=False, control=False,
+        #         attack_data=AttackData(setting_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                             setting_speed_x=0, setting_speed_y=0,
+        #                             current_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                             current_frame=-1, player_number=True, speed_x=0, speed_y=0,
+        #                             start_up=0, active=0, hit_damage=0, guard_damage=0,
+        #                             start_add_energy=0, hit_add_energy=0, guard_add_energy=0,
+        #                             give_energy=0, impact_x=0, impact_y=0, give_guard_recov=0,
+        #                             attack_type=0, down_prop=False, is_projectile=False,
+        #                             is_live=False, empty_flag=True, identifier=''),
+        #         remaining_frame=15, hit_confirm=False,
+        #         graphic_size_x=400, graphic_size_y=320, graphic_adjust_x=140,
+        #         hit_count=0, last_hit_frame=487,
+        #         projectile_attack=[
+        #             AttackData(setting_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                     setting_speed_x=0, setting_speed_y=0,
+        #                     current_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                     current_frame=-1, player_number=True, speed_x=0, speed_y=0,
+        #                     start_up=0, active=0, hit_damage=0, guard_damage=0,
+        #                     start_add_energy=0, hit_add_energy=0, guard_add_energy=0,
+        #                     give_energy=0, impact_x=0, impact_y=0, give_guard_recov=0,
+        #                     attack_type=0, down_prop=False, is_projectile=False, is_live=False,
+        #                     empty_flag=True, identifier=''),
+        #             AttackData(setting_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                     setting_speed_x=0, setting_speed_y=0,
+        #                     current_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                     current_frame=-1, player_number=True, speed_x=0, speed_y=0,
+        #                     start_up=0, active=0, hit_damage=0, guard_damage=0,
+        #                     start_add_energy=0, hit_add_energy=0, guard_add_energy=0,
+        #                     give_energy=0, impact_x=0, impact_y=0, give_guard_recov=0,
+        #                     attack_type=0, down_prop=False, is_projectile=False, is_live=False,
+        #                     empty_flag=True, identifier=''),
+        #             AttackData(setting_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                     setting_speed_x=0, setting_speed_y=0,
+        #                     current_hit_area=HitArea(left=0, right=0, top=0, bottom=0),
+        #                     current_frame=-1, player_number=True, speed_x=0, speed_y=0,
+        #                     start_up=0, active=0, hit_damage=0, guard_damage=0,
+        #                     start_add_energy=0, hit_add_energy=0, guard_add_energy=0,
+        #                     give_energy=0, impact_x=0, impact_y=0, give_guard_recov=0,
+        #                     attack_type=0, down_prop=False, is_projectile=False, is_live=False,
+        #                     empty_flag=True, identifier='')
+        #         ]
+        #     )
+        # ]
+
+        # self.frame_data.projectile_data = [
+        #     AttackData(
+        #         setting_hit_area=HitArea(left=205, right=250, top=175, bottom=195),
+        #         setting_speed_x=3, setting_speed_y=0,
+        #         current_hit_area=HitArea(left=632, right=677, top=510, bottom=530),
+        #         current_frame=31, player_number=True, speed_x=3, speed_y=0,
+        #         start_up=20, active=150, hit_damage=5, guard_damage=2,
+        #         start_add_energy=-5, hit_add_energy=3, guard_add_energy=5,
+        #         give_energy=5, impact_x=10, impact_y=0, give_guard_recov=5,
+        #         attack_type=1, down_prop=False, is_projectile=True, is_live=True,
+        #         empty_flag=False, identifier='ff6438e3-ff1a-4239-909b-beb2f467dc64'
+        #     )
+        # ]
+
         action = random.choice(POSSIBLE_ACTIONS)
         self.cc.command_call(action)
                         
