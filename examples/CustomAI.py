@@ -1,5 +1,8 @@
 import logging
 import random
+import os
+from datetime import datetime
+import json
 
 from pyftg import (AIInterface, AudioData, CommandCenter, FrameData, GameData,
                    Key, RoundResult, ScreenData)
@@ -50,11 +53,19 @@ POSSIBLE_ACTIONS = [
     "STAND_D_DF_FC",
 ]
 
+SAVE_DIR = "../state_action_records"
+os.makedirs(SAVE_DIR, exist_ok=True)
+
 class CustomAI(AIInterface):
     def __init__(self):
         self.blind_flag = False
         self.width = 96
         self.height = 64
+        now = datetime.now()
+        self.session_id = now.strftime("%m%d_%H%M%S")
+        self.file_path_template = os.path.join(
+            SAVE_DIR, f"{self.session_id}_r{{round:02d}}.jsonl"
+        )
 
     def name(self) -> str:
         return self.__class__.__name__
@@ -86,8 +97,6 @@ class CustomAI(AIInterface):
         
     def processing(self):
 
-        print("This function is called every frame")
-
         if self.frame_data.empty_flag or self.frame_data.current_frame_number <= 0:
             return
   
@@ -97,12 +106,28 @@ class CustomAI(AIInterface):
 
         self.input_key.empty()
         self.cc.skill_cancel()
-        
-        print(f"{self.frame_data.character_data=}")
-        print(f"{self.frame_data.projectile_data=}")
 
         action = random.choice(POSSIBLE_ACTIONS)
         self.cc.command_call(action)
+
+        self.save_frame_data(self.frame_data.to_dict(), action)
+
+    def save_frame_data(self, frame_data_dict, action):
+        """
+        현재 프레임 데이터를 JSONL로 저장
+
+        Args:
+            frame_data_dict (dict): FrameData를 to_dict()로 변환한 dict
+            action (str): AI가 선택한 action
+        """
+        frame_data_dict['action'] = action
+
+        round_num = frame_data_dict['current_round']
+        file_path = self.file_path_template.format(round=round_num)
+
+        with open(file_path, "a") as f:
+            f.write(json.dumps(frame_data_dict) + "\n")
+
                         
     def calculate_distance(self, display_buffer: bytes):
         for y in reversed(range(self.height)):
