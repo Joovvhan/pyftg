@@ -1,7 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,python,pycharm+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,python,pycharm+all
 
-/src/*
+# /src/*
 !/src/pyftg
 
 ### macOS ###
