@@ -8,6 +8,7 @@ from typing_extensions import Annotated, Optional
 from KickAI import KickAI
 from DisplayInfo import DisplayInfo
 from CustomAI import CustomAI
+from RandomAI import RandomAI
 from pyftg.socket.aio.gateway import Gateway
 from pyftg.utils.logging import DEBUG, set_logging
 
@@ -26,7 +27,10 @@ async def start_process(host: str, port: int, character: str = "ZEN", game_num: 
     agent3 = CustomAI()
     gateway.register_ai("CustomAI", agent3)
 
-    await gateway.run_game([character, character], ["CustomAI", "DisplayInfo"], game_num)
+    agent4 = RandomAI()
+    gateway.register_ai("RandomAI", agent4)
+
+    await gateway.run_game([character, character], ["CustomAI", "RandomAI"], game_num)
 
 
 @app.command()
@@ -65,7 +69,7 @@ if __name__ == '__main__':
     #     cwd="../../DareFightingICE-7.0"
     # )
 
-    time.sleep(1)
+    time.sleep(2)
 
     try:
         app()

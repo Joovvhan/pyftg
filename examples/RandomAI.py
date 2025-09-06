@@ -50,7 +50,7 @@ POSSIBLE_ACTIONS = [
     "STAND_D_DF_FC",
 ]
 
-class CustomAI(AIInterface):
+class RandomAI(AIInterface):
     def __init__(self):
         self.blind_flag = False
         self.width = 96
@@ -86,8 +86,6 @@ class CustomAI(AIInterface):
         
     def processing(self):
 
-        print("This function is called every frame")
-
         if self.frame_data.empty_flag or self.frame_data.current_frame_number <= 0:
             return
   
@@ -97,9 +95,6 @@ class CustomAI(AIInterface):
 
         self.input_key.empty()
         self.cc.skill_cancel()
-        
-        print(f"{self.frame_data.character_data=}")
-        print(f"{self.frame_data.projectile_data=}")
 
         action = random.choice(POSSIBLE_ACTIONS)
         self.cc.command_call(action)
