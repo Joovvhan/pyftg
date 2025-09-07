@@ -1,5 +1,16 @@
 # pyftg
 
+### TODO
+
+```
+1. Observation 설계 및 JSONL 데이터 비교 → Observation Version 1.0 확정
+2. Action Space 설계
+3. Action Mask 설계
+4. Observation Vector를 입력으로, Action Vector를 출력으로 하는 MLP 모델 작성
+5. Offline 강화 학습 테스트 수행
+6. 강화 학습 로깅 기능 추가
+```
+
 An interface for implementing python AI in DareFightingICE
 
 First, install `pyftg` with pip.
