@@ -38,6 +38,10 @@ def is_valid_attack(atk: dict, check_bbox: bool = True) -> bool:
 
     if is_projectile and not is_live:
         return False
+    
+    # required_keys = ['remaining_frame', 'hit_confirm']
+    # if not all(k in atk for k in required_keys):
+    #     return False
 
     # 옵션: BBOX 유효성 체크
     if check_bbox:
@@ -159,6 +163,68 @@ def debug_attack_bboxes(file_path: str):
             print(f"Frame {frame_num:<4} (Round {round_num}) || " + " || ".join(row_parts))
 
 
+def filter_frame_data(frame_data):
+    """
+    시각화용 필수 정보만 추출 및 유효성 검증
+    - 원본 frame_data는 변형하지 않음
+    - 유효하지 않은 공격/투사체는 제외
+    """
+
+    # ---------- 시각화에 필요한 필수 키 ----------
+    char_required = [
+        'x','y','left','right','top','bottom',
+        'player_number','front','hp','energy','action',
+        'speed_x','speed_y'
+    ]
+
+    attack_required = [
+        'current_hit_area', 'player_number', 'current_frame',
+        'active','hit_damage','guard_damage','start_up',
+        "empty_flag", "is_projectile", "is_live",
+        # "right", "left", "top", "bottom",
+        # 'remaining_frame', 'hit_confirm',
+    ]
+
+    # ---------- 캐릭터 필수 정보만 저장 ----------
+    filtered_characters = []
+
+    for char in frame_data.get('character_data', []):
+        # 필수 키 존재 여부 확인
+        missing = [k for k in char_required if k not in char]
+        if missing:
+            raise ValueError(f"Character missing required fields {missing}: {char}")
+
+        filtered_char = {k: char[k] for k in char_required}
+
+        # ---------- attack_data 필수 정보 ----------
+        atk = char.get('attack_data')
+        if atk and is_valid_attack(atk):
+            missing_atk = [k for k in attack_required if k not in atk or atk[k] is None]
+            if missing_atk:
+                raise ValueError(f"Attack missing required fields {missing_atk}: {atk}")
+            filtered_char['attack_data'] = {k: atk[k] for k in attack_required}
+        else:
+            filtered_char['attack_data'] = None
+
+        # ---------- projectile_attack 필수 정보 ----------
+        proj_list = []
+        for proj in char.get('projectile_attack', []):
+            if proj is None or not is_valid_attack(proj):
+                continue
+            missing_proj = [k for k in attack_required if k not in proj or proj[k] is None]
+            if missing_proj:
+                raise ValueError(f"Projectile missing required fields {missing_proj}: {proj}")
+            proj_list.append({k: proj[k] for k in attack_required})
+        filtered_char['projectile_attack'] = proj_list
+
+        filtered_characters.append(filtered_char)
+
+    # ---------- 시각화용 데이터 구조 반환 ----------
+    return {
+        'character_data': filtered_characters
+    }
+
+
 def visualize_frame(frame_data, ax):
     """
     한 프레임 데이터를 시각화합니다.
@@ -169,6 +235,9 @@ def visualize_frame(frame_data, ax):
         frame_data (dict): 한 프레임의 상태 액션 데이터
         ax (matplotlib.axes.Axes): 시각화를 위한 Axes 객체
     """
+
+    frame_data = filter_frame_data(frame_data)  # 유효성 검증
+
     characters = frame_data['character_data']
     # projectiles = frame_data.get('projectile_data', [])
 
@@ -259,31 +328,6 @@ def visualize_frame(frame_data, ax):
                 f"HD:{hit_damage} GD:{guard_damage} SU:{start_up}",
                 color=color, fontsize=8
             )
-
-        # 독립 투사체 표시
-        # for proj in projectiles:
-        #     hit_area = proj.get('current_hit_area')  # ✅ 여기도 current_hit_area로 변경
-        #     proj_rect = patches.Rectangle(
-        #         (hit_area['left'], hit_area['top']),
-        #         hit_area['right'] - hit_area['left'],
-        #         hit_area['bottom'] - hit_area['top'],
-        #         linewidth=1, edgecolor='purple', facecolor='none', linestyle=':'
-        #     )
-        #     ax.add_patch(proj_rect)
-
-        #     rem_frame = proj.get('remaining_frame', proj.get('current_frame', '?'))
-        #     hit_confirm = proj.get('hit_confirm', False)
-        #     active = proj.get('active', 0)
-        #     hit_damage = proj.get('hit_damage', 0)
-        #     guard_damage = proj.get('guard_damage', 0)
-        #     start_up = proj.get('start_up', 0)
-
-        #     ax.text(
-        #         hit_area['left'], hit_area['top'] - 5,
-        #         f"RF:{rem_frame} Hit:{hit_confirm} Act:{active}\n"
-        #         f"HD:{hit_damage} GD:{guard_damage} SU:{start_up}",
-        #         color='purple', fontsize=8
-        #     )
 
     ax.invert_yaxis()
     ax.grid(True)
