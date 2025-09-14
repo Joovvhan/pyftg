@@ -2,7 +2,7 @@ from glob import glob
 import json
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-
+import math
 
 def is_valid_attack(atk: dict, check_bbox: bool = True) -> bool:
     """
@@ -184,6 +184,7 @@ def visualize_frame(frame_data, ax):
         x, y = char['x'], char['y']  # 캐릭터 중심 좌표
         left, right, top, bottom = char['left'], char['right'], char['top'], char['bottom']
         front = char['front']
+        speed_x, speed_y = char.get('speed_x', 0), char.get('speed_y', 0)
 
         # 캐릭터 사각형
         rect = patches.Rectangle(
@@ -192,11 +193,25 @@ def visualize_frame(frame_data, ax):
         )
         ax.add_patch(rect)
 
-        # 시선 방향 화살표
-        dx = 20 if front else -20
-        ax.arrow(x, y, dx, 0, head_width=10, head_length=10, fc='green', ec='green')
+        # ---------- 시선 화살표 (front) ----------
+        dx_front = 10 if front else -10
+        y_front = y + 10  # 아래쪽으로 이동
+        ax.arrow(x, y_front, dx_front, 0, head_width=8, head_length=8, fc='green', ec='green')
 
-        # HP / Energy / Action 텍스트
+        # ---------- 속도 화살표 (speed_x, speed_y) ----------
+        scale = 3  # 속도 스케일링
+        if speed_x != 0 or speed_y != 0:
+            ax.arrow(x, y, speed_x*scale, speed_y*scale, head_width=8, head_length=8, fc='orange', ec='orange')
+
+        # ---------- 속도 텍스트 ----------
+        speed_mag = math.sqrt(speed_x**2 + speed_y**2)
+        # speed_text = f"speed=({speed_x:.1f},{speed_y:.1f})\n|v|={speed_mag:.2f}"
+        speed_text = f"({speed_x:.1f},{speed_y:.1f})\n|v|={speed_mag:.2f}"
+        ax.text(x, y-15, speed_text, color='orange', fontsize=8, ha='center',
+                bbox=dict(facecolor='white', alpha=0.8, edgecolor='none', pad=3)  # 반투명 흰색 배경)
+        )
+
+        # ---------- HP / Energy / Action 텍스트 ----------
         ax.text(x, top-15, f"HP:{char['hp']}", color='red', fontsize=10, ha='center')
         ax.text(x, top-30, f"EN:{char['energy']}", color='blue', fontsize=10, ha='center')
         ax.text(x, bottom+15, f"Action:{char.get('action', '?')}", color='black', fontsize=10, ha='center')
